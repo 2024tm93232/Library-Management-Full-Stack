@@ -1,0 +1,33 @@
+<div class="table-container popUpWidth">
+    <h2>Exchange Book</h2>
+    <div class="myBook">
+        <span style="font-weight: bold;">{{ data.book.title }} <span style="font-weight: 400;">by</span> {{ data.book.author }}</span>
+    </div>
+    <form [formGroup]="exchangeBookForm">
+        <div class="form-group">
+            <label for="deliveryMethod">Delivery Method</label>
+            <input id="deliveryMethod" formControlName="deliveryMethod" type="text"
+                placeholder="Enter delivery method" />
+            <div *ngIf="exchangeBookForm.get('deliveryMethod')?.invalid && exchangeBookForm.get('deliveryMethod')?.touched"
+                class="error-message">
+                Delivery method is required
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="exchangeDuration">Exchange Duration</label>
+            <input id="exchangeDuration" formControlName="exchangeDuration" type="text"
+                placeholder="Enter exchange duration in days" />
+            <div *ngIf="exchangeBookForm.get('exchangeDuration')?.invalid && exchangeBookForm.get('exchangeDuration')?.touched"
+                class="error-message">
+                Exchange duration is required
+            </div>
+        </div>
+
+        <div class="myRow">
+            <button class="myButton" (click)="sendExchangeRequest()">Exchange Book</button>
+            <button class="myButton" (click)="close()">Cancel</button>
+        </div>
+
+    </form>
+</div>

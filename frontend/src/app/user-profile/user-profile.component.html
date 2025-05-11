@@ -1,0 +1,208 @@
+<app-header-bar [profileForm]="profileForm"></app-header-bar>
+
+<div class="table-container">
+    <span class="pageDesc">User profile</span>
+
+    <div style = "align-items: initial !important;" class="myRow">
+    <form style = "width: 26%; margin-right: 5px;" [formGroup]="profileForm" class="pageContent">
+        <div *ngIf="userData" class="myRow">
+
+            <div class="boxWidth">
+                <label for="name">Name</label>
+                <input *ngIf="showEdit" id="name" formControlName="name" type="text" class="form-control" />
+                <div *ngIf="!showEdit" class="fieldValues">
+                    {{userData.name}}
+                </div>
+            </div>
+
+            <div class="boxWidth">
+                <label for="email">Email</label>
+                <input *ngIf="showEdit" id="email" formControlName="email" type="email" class="form-control" />
+                <div *ngIf="!showEdit" class="fieldValues">
+                    {{userData.email}}
+                </div>
+            </div>
+
+            <div class="boxWidth">
+                <label for="readingPreferences">Reading Preferences</label>
+                <textarea *ngIf="showEdit" id="readingPreferences" formControlName="readingPreferences"
+                    class="form-control" style="height: 28px;"></textarea>
+                <div *ngIf="!showEdit" class="fieldValues">
+                    {{userData.readingPreferences}}
+                </div>
+            </div>
+
+            <div class="boxWidth">
+                <label for="favoriteGenres">Favorite Genres</label>
+                <!-- <textarea *ngIf="showEdit" id="favoriteGenres" formControlName="favoriteGenres"
+                    class="form-control"></textarea> -->
+
+                    <mat-select *ngIf="showEdit" id="favoriteGenres" formControlName="favoriteGenres" multiple class="form-control mySelect">
+                        <mat-option *ngFor="let genre of favoriteBookGenres" [value]="genre">{{ genre }}</mat-option>
+                    </mat-select>
+
+                <!-- <select  *ngIf="showEdit" formControlName="favoriteGenres" multiple class="form-control">
+                    <option *ngFor="let genre of favoriteGenres" [value]="genre">{{ genre }}</option>
+                </select> -->
+                <div *ngIf="!showEdit" class="fieldValues">
+                    {{userData.favoriteGenres}}
+                </div>
+            </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary myButton" (click)="addBook()">Add book</button>
+        <button *ngIf="!showEdit" class="btn btn-primary myButton" (click)="editProfile()">Edit
+            Profile</button>
+        <button *ngIf="showEdit" class="btn btn-primary myButton" (click)="saveProfile()">Save
+            Profile</button>
+    </form>
+
+    <div style = "width: 70%;" class="pageContent">
+        <mat-tab-group>
+            <mat-tab label="My Posts">
+                <table mat-table [dataSource]="books" class="mat-elevation-z8 pageContent">
+
+                    <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef> Title </th>
+                        <td mat-cell *matCellDef="let book"> {{ book.title }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="author">
+                        <th mat-header-cell *matHeaderCellDef> Author </th>
+                        <td mat-cell *matCellDef="let book"> {{ book.author }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="genre">
+                        <th mat-header-cell *matHeaderCellDef> Genre </th>
+                        <td mat-cell *matCellDef="let book"> {{ book.genre }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="condition">
+                        <th mat-header-cell *matHeaderCellDef> Condition </th>
+                        <td mat-cell *matCellDef="let book"> {{ book.condition }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="available">
+                        <th mat-header-cell *matHeaderCellDef> Availability </th>
+                        <td mat-cell *matCellDef="let book"> {{ book.available?'Available':'Not Available' }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                        <td mat-cell *matCellDef="let book">
+                            <span class="pointer" [matMenuTriggerFor]="menu">
+                                <mat-icon>more_vert</mat-icon>
+                            </span>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item (click)="editBook(book)">Edit Book</button>
+                                <button mat-menu-item (click)="deleteBook(book)">Delete Book</button>
+                            </mat-menu>
+
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+            </mat-tab>
+            <mat-tab label="Transaction history">
+                <table mat-table [dataSource]="transactions" class="mat-elevation-z8 pageContent">
+                    <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef> Book Title </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.book.title }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="author">
+                        <th mat-header-cell *matHeaderCellDef> Author </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.book.author }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="genre">
+                        <th mat-header-cell *matHeaderCellDef> Genre </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.book.genre }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="deliveryMethod">
+                        <th mat-header-cell *matHeaderCellDef> Delivery Method </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.deliveryMethod }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="exchangeDuration">
+                        <th mat-header-cell *matHeaderCellDef> Exchange Duration </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.exchangeDuration }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="requestedBy">
+                        <th mat-header-cell *matHeaderCellDef> Requested By </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.recipient.email }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.status }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                        <th mat-header-cell *matHeaderCellDef> Actions </th>
+                        <td mat-cell *matCellDef="let transaction">
+                            <span class="pointer" [matMenuTriggerFor]="menu" *ngIf="transaction.status == 'Pending'">
+                                <mat-icon>more_vert</mat-icon>
+                            </span>
+                            <mat-menu #menu="matMenu">
+                                <button mat-menu-item *ngIf="transaction.status === 'Pending'"
+                                    (click)="acceptExchangeTransaction(transaction)">Accept</button>
+                                <button mat-menu-item *ngIf="transaction.status === 'Pending'"
+                                    (click)="rejectExchangeRequest(transaction)" >Reject</button>
+                                <!-- <button mat-menu-item *ngIf="transaction.status === 'Accepted'"
+                                    (click)="completeTransaction(transaction)" class="btn btn-primary">Complete</button> -->
+                            </mat-menu>
+
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="transactionColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: transactionColumns;"></tr>
+                </table>
+            </mat-tab>
+            <mat-tab label="My Exchange Requests">
+                <table mat-table [dataSource]="myRequests" class="mat-elevation-z8 pageContent">
+                    <ng-container matColumnDef="title">
+                        <th mat-header-cell *matHeaderCellDef> Book Title </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.book.title }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="author">
+                        <th mat-header-cell *matHeaderCellDef> Author </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.book.author }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="genre">
+                        <th mat-header-cell *matHeaderCellDef> Genre </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.book.genre }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="deliveryMethod">
+                        <th mat-header-cell *matHeaderCellDef> Delivery Method </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.deliveryMethod }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="exchangeDuration">
+                        <th mat-header-cell *matHeaderCellDef> Exchange Duration </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.exchangeDuration }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="requestedFrom">
+                        <th mat-header-cell *matHeaderCellDef> Requested From </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.recipient.email }} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                        <td mat-cell *matCellDef="let transaction"> {{ transaction.status }} </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="myRequestsColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: myRequestsColumns;"></tr>
+                </table>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+</div>

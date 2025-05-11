@@ -1,0 +1,72 @@
+<div class="table-container popUpWidth">
+    <h2>{{ isEditMode ? 'Edit Book' : 'Create Posting' }}</h2>
+    <form [formGroup]="addBookForm">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input id="title" formControlName="title" type="text" placeholder="Enter book title" />
+            <div *ngIf="addBookForm.get('title')?.invalid && addBookForm.get('title')?.touched" class="error-message">
+                Title is required
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="author">Author</label> 
+            <!-- //Aurhor -->
+            <input id="author" formControlName="author" type="text" placeholder="Enter author name" />
+            <div *ngIf="addBookForm.get('author')?.invalid && addBookForm.get('author')?.touched" class="error-message">
+                Author is required
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="genre">Genre</label>
+            <!-- <input id="genre" formControlName="genre" type="text" placeholder="Enter genre" /> -->
+            <select id="genre" formControlName="genre" placeholder="Select genre">
+                <option [value]="genre" *ngFor="let genre of genres">{{genre}}</option>
+            </select>
+            <div *ngIf="addBookForm.get('genre')?.invalid && addBookForm.get('genre')?.touched" class="error-message">
+                Genre is required
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="condition">Condition</label>
+            <!-- 
+        <mat-form-field>
+            <mat-select formControlName="condition">
+              @for (element of conditions; track element) {
+                <mat-option [value]="element">{{element}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field> -->
+
+            <select id="condition" formControlName="condition" placeholder="Select condition">
+                <option value="New">New</option>
+                <option value="Good">Good</option>
+                <option value="Fair">Fair</option>
+            </select>
+
+            <div *ngIf="addBookForm.get('condition')?.invalid && addBookForm.get('condition')?.touched"
+                class="error-message">
+                Condition is required
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>
+                <label for="available">Available</label>
+                <mat-checkbox class="example-margin" formControlName="available"></mat-checkbox>
+
+                <!-- <input type="checkbox" formControlName="available" /> -->
+            </label>
+        </div>
+
+        <div class="myRow">
+
+            <button *ngIf="!isEditMode" class="myButton" (click)="addBook()">Add Book</button>
+            <button *ngIf="isEditMode" class="myButton" (click)="editBook()">Save Changes</button>
+            <button class="myButton" (click)="close()">Cancel</button>
+        </div>
+
+    </form>
+</div>
